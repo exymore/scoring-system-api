@@ -115,17 +115,15 @@ const getTreeData = (node, treeRepresentation = {}) => {
   });
 };
 
-console.log(TRAIN_DATA.map(Object.values).map(el => el.slice(1))[0]);
 const tree = buildTree(TRAIN_DATA.map(Object.values).map(el => el.slice(1)));
 
 export const dataForChart = getTreeData(tree);
 
-// TODO:
-// const myData = [39, 'No', 1, 'None', '500'];
-//
-// const decision = recursiveClassifying(myData, tree) === 'Yes';
-//
-// console.log(
-//   '\nFinal result: ' +
-//     (decision ? 'Loan application is resolved' : 'Loan application is rejected')
-// );
+const myData = ['Female', 'No', 0, 'Graduate', 'Yes', 4583, 0, 133, 360, 0, 'Semiurban'];
+
+const decision = recursiveClassifying(myData, tree) === 'Y';
+
+console.log(
+  '\nFinal result: ' +
+    (decision ? 'Loan application is resolved' : 'Loan application is rejected')
+);
