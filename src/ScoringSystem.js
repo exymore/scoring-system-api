@@ -2,6 +2,8 @@ import Question from './Question';
 import Branch from './Branch';
 import Leaf from './Leaf';
 import { TRAIN_DATA } from './Data';
+import differenceWith from 'lodash/differenceWith';
+import isEqual from 'lodash/isEqual';
 
 export const categories = [
   'Gender',
@@ -9,13 +11,12 @@ export const categories = [
   'Dependents',
   'Education',
   'Self_Employed',
-  'ApplicantIncome',
+  'Income',
   'CoapplicantIncome',
-  'LoanAmount',
-  'Loan_Amount_Term',
-  'Credit_History',
-  'Property_Area',
-  'Loan_Status'
+  'Amount',
+  'Term',
+  'History',
+  'Property'
 ];
 
 export const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
@@ -99,19 +100,33 @@ const buildTree = rows => {
   return new Branch(question, trueBranch, falseBranch);
 };
 
-const getTreeData = (node, treeRepresentation = {}) => {
+const getTreeData = (node, treeRepresentation = {}, source) => {
   if (node instanceof Leaf) {
     return Object.assign(treeRepresentation, {
-      name: node.prediction
+      name: node.prediction === 'Y' ? 'Resolve' : 'Reject'
     });
   }
 
+  let children;
+  const trueAnswer = getTreeData(node.trueBranch, treeRepresentation.children, true);
+  const falseAnswer = getTreeData(node.falseBranch, treeRepresentation.children, false);
+
+  if (
+    (isEqual(trueAnswer, { name: 'Resolve' }) &&
+      isEqual(falseAnswer, { name: 'Reject' })) ||
+    (isEqual(trueAnswer, { name: 'Reject' }) && isEqual(falseAnswer, { name: 'Resolve' }))
+  )
+    children = [trueAnswer];
+  else children = [trueAnswer, falseAnswer];
+
   return Object.assign(treeRepresentation, {
-    name: node.question.toString(),
-    children: [
-      getTreeData(node.trueBranch, treeRepresentation.children),
-      getTreeData(node.falseBranch, treeRepresentation.children)
-    ]
+    name:
+      source === undefined
+        ? node.question.toString()
+        : source
+        ? `T: ${node.question.toString()}`
+        : `F: ${node.question.toString()}`,
+    children: children
   });
 };
 
@@ -119,7 +134,7 @@ const tree = buildTree(TRAIN_DATA.map(Object.values).map(el => el.slice(1)));
 
 export const dataForChart = getTreeData(tree);
 
-const myData = ['Female', 'No', 0, 'Graduate', 'Yes', 4583, 0, 133, 360, 0, 'Semiurban'];
+const myData = ['Male', 'No', 0, 'Graduate', 'No', 5849, 0, 100, 360, 1, 'Urban'];
 
 const decision = recursiveClassifying(myData, tree) === 'Y';
 
