@@ -80,7 +80,7 @@ const findRelevantQuestion = rows => {
   return [bestGain, bestQ];
 };
 
-const recursiveClassifying = (row, node) => {
+export const recursiveClassifying = (row, node) => {
   if (node instanceof Leaf) return node.prediction;
 
   if (node.question.match(row)) return recursiveClassifying(row, node.trueBranch);
@@ -130,15 +130,6 @@ const getTreeData = (node, treeRepresentation = {}, source) => {
   });
 };
 
-const tree = buildTree(TRAIN_DATA.map(Object.values).map(el => el.slice(1)));
+export const tree = buildTree(TRAIN_DATA.map(Object.values).map(el => el.slice(1)));
 
 export const dataForChart = getTreeData(tree);
-
-const myData = ['Male', 'No', 0, 'Graduate', 'No', 5849, 0, 100, 360, 1, 'Urban'];
-
-const decision = recursiveClassifying(myData, tree) === 'Y';
-
-console.log(
-  '\nFinal result: ' +
-    (decision ? 'Loan application is resolved' : 'Loan application is rejected')
-);
