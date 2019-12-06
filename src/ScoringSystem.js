@@ -1,8 +1,6 @@
 import Question from './Question';
 import Branch from './Branch';
 import Leaf from './Leaf';
-import { TRAIN_DATA } from './Data';
-import differenceWith from 'lodash/differenceWith';
 import isEqual from 'lodash/isEqual';
 
 export const categories = [
@@ -130,6 +128,5 @@ const getTreeData = (node, treeRepresentation = {}, source) => {
   });
 };
 
-export const tree = buildTree(TRAIN_DATA.map(Object.values).map(el => el.slice(1)));
-
-export const dataForChart = getTreeData(tree);
+export const tree = data => buildTree(data.map(Object.values).map(el => el.slice(1)));
+export const dataForChart = tree => getTreeData(tree);
