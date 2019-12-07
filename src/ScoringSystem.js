@@ -4,17 +4,14 @@ import Leaf from './Leaf';
 import isEqual from 'lodash/isEqual';
 
 export const categories = [
-  'Gender',
-  'Married',
-  'Dependents',
-  'Education',
-  'Self_Employed',
-  'Income',
-  'CoapplicantIncome',
-  'Amount',
-  'Term',
-  'History',
-  'Property'
+  'married',
+  'dependents',
+  'education',
+  'self_employed',
+  'income',
+  'coapplicantincome',
+  'amount',
+  'history'
 ];
 
 export const isNumeric = n => !isNaN(parseFloat(n)) && isFinite(n);
@@ -101,7 +98,7 @@ const buildTree = rows => {
 const getTreeData = (node, treeRepresentation = {}, source) => {
   if (node instanceof Leaf) {
     return Object.assign(treeRepresentation, {
-      name: node.prediction === 'Y' ? 'Resolve' : 'Reject'
+      name: node.prediction === 1 ? 'Resolve' : 'Reject'
     });
   }
 

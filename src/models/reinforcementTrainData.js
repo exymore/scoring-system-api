@@ -8,20 +8,17 @@ export default class ReinforcementTrainData extends Sequelize.Model {
           type: Sequelize.INTEGER,
           primaryKey: true,
           autoIncrement: true,
-          notNull: true
+          autoIncrementIdentity: true
         },
-        gender: { type: Sequelize.STRING },
-        married: { type: Sequelize.STRING },
-        dependents: { type: Sequelize.STRING },
-        education: { type: Sequelize.STRING },
-        self_employed: { type: Sequelize.STRING },
+        married: { type: Sequelize.INTEGER },
+        dependents: { type: Sequelize.INTEGER },
+        education: { type: Sequelize.INTEGER },
+        self_employed: { type: Sequelize.INTEGER },
         income: { type: Sequelize.INTEGER },
         coapplicantincome: { type: Sequelize.INTEGER },
         amount: { type: Sequelize.INTEGER },
-        term: { type: Sequelize.INTEGER },
         history: { type: Sequelize.INTEGER },
-        property: { type: Sequelize.STRING },
-        loan_status: { type: Sequelize.STRING }
+        loan_status: { type: Sequelize.INTEGER }
       },
       {
         sequelize,

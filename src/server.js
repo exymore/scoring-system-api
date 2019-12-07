@@ -15,7 +15,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 let data, decisionTree;
 
 initializeDbPostgres(async () => {
-  data = await TrainData.findAll({ raw: true });
+  data = [
+    ...(await TrainData.findAll({ raw: true })),
+    ...(await ReinforcementTrainData.findAll({ raw: true }))
+  ];
   console.log('Data for training is fetched');
   decisionTree = tree(data);
   console.log('Decision tree ready');
@@ -29,38 +32,28 @@ app.post('/', async function(req, res) {
   const decision =
     recursiveClassifying(
       [
-        req.body.gender,
         req.body.married,
-        req.body.dependetnts,
+        req.body.dependents,
         req.body.education,
         req.body.selfEmployed,
-        Number(req.body.income),
-        Number(req.body.coapplicantIncome),
-        Number(req.body.amount),
-        Number(req.body.term),
-        Number(req.body.history),
-        req.body.property
+        req.body.income,
+        req.body.coapplicantIncome,
+        req.body.amount,
+        req.body.history
       ],
       decisionTree
-    ) === 'Y';
-  await ReinforcementTrainData.create(
-    Object.assign(
-      {
-        gender: req.body.gender,
-        married: req.body.married,
-        dependents: req.body.dependents,
-        education: req.body.education,
-        selfEmployed: req.body.selfEmployed,
-        income: Number(req.body.income),
-        coapplicantIncome: Number(req.body.coapplicantIncome),
-        amount: Number(req.body.amount),
-        term: Number(req.body.term),
-        history: Number(req.body.history),
-        property: req.body.property
-      },
-      decision === false ? { loan_status: 'N' } : { loan_status: 'Y' }
-    )
-  );
+    ) === 1;
+  await ReinforcementTrainData.create({
+    married: parseInt(req.body.married),
+    dependents: parseInt(req.body.dependents),
+    education: parseInt(req.body.education),
+    self_employed: parseInt(req.body.selfEmployed),
+    income: parseInt(req.body.income),
+    coapplicantincome: parseInt(req.body.coapplicantIncome),
+    amount: parseInt(req.body.amount),
+    history: parseInt(req.body.history),
+    loan_status: decision ? 1 : 0
+  });
   res.send(decision);
 });
 
