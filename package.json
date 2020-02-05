@@ -34,7 +34,10 @@
     "prettier": "^1.17.0"
   },
   "scripts": {
+    "heroku-postbuild": "cd client && npm install",
     "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "cd client && npm run build",
     "lint": "eslint src --color",
     "lint:fix": "eslint src --color --fix",
     "prettier": "prettier --write \"src/**/*.js\""
