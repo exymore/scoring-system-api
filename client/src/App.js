@@ -92,7 +92,13 @@ function App() {
   }, [fetchData]);
 
   const validate = () => {
-    if (Object.values(state).every(x => x !== null && Boolean(x))) setValid(true);
+    if (
+      Object.values(state).every(x => x !== null && Boolean(x)) &&
+      state.income >= 0 &&
+      state.coapplicantIncome >= 0 &&
+      state.amount >= 0
+    )
+      setValid(true);
     else setValid(false);
   };
 
@@ -204,30 +210,32 @@ function App() {
       </Grid>
 
       <Grid container direction="row" justify="flex-start" alignItems="flex-start">
-        <TextField
-          type="number"
-          className={classes.textField}
-          margin="normal"
-          value={state.income || ''}
-          label={i18n.income[lang]}
-          onChange={handleChange('income')}
-        />
-        <TextField
-          type="number"
-          className={classes.textField}
-          margin="normal"
-          value={state.coapplicantIncome || ''}
-          label={i18n.coapplicantIncome[lang]}
-          onChange={handleChange('coapplicantIncome')}
-        />
-        <TextField
-          type="number"
-          className={classes.textField}
-          margin="normal"
-          value={state.amount || ''}
-          label={i18n.amount[lang]}
-          onChange={handleChange('amount')}
-        />
+        <form className={classes.root} noValidate autoComplete="off">
+          <TextField
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            value={state.income || ''}
+            label={i18n.income[lang]}
+            onChange={handleChange('income')}
+          />
+          <TextField
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            value={state.coapplicantIncome || ''}
+            label={i18n.coapplicantIncome[lang]}
+            onChange={handleChange('coapplicantIncome')}
+          />
+          <TextField
+            type="number"
+            className={classes.textField}
+            margin="normal"
+            value={state.amount || ''}
+            label={i18n.amount[lang]}
+            onChange={handleChange('amount')}
+          />
+        </form>
       </Grid>
 
       <Button
