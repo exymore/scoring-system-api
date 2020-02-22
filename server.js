@@ -21,6 +21,15 @@ initializeDbPostgres(async () => {
   console.log('Decision tree ready');
 });
 
+const validator = async function(req, res, next) {
+  const { income, amount, history, coapplicantIncome } = req.body;
+  if (history === 0 || amount >= 1000 || (income <= 100 && coapplicantIncome <= 100))
+    return res.send(false);
+  else if (income >= 50000 || coapplicantIncome >= 50000 || amount <= 2)
+    return res.send(true);
+  return next();
+};
+
 app.get('/data', async function(req, res) {
   try {
     res.send(dataForChart(decisionTree));
@@ -29,19 +38,29 @@ app.get('/data', async function(req, res) {
   }
 });
 
-app.post('/data', async function(req, res) {
+app.post('/data', validator, async function(req, res) {
   try {
+    const {
+      income,
+      amount,
+      coapplicantIncome,
+      education,
+      dependents,
+      selfEmployed,
+      history,
+      married
+    } = req.body;
     const decision =
       recursiveClassifying(
         [
-          req.body.married,
-          req.body.dependents,
-          req.body.education,
-          req.body.selfEmployed,
-          req.body.income,
-          req.body.coapplicantIncome,
-          req.body.amount,
-          req.body.history
+          married,
+          dependents,
+          education,
+          selfEmployed,
+          income,
+          coapplicantIncome,
+          amount,
+          history
         ],
         decisionTree
       ) === 1;
